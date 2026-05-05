@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Laborator 10</string>
+    <string-array name="forecast_days">
+        <item>1 zi</item>
+        <item>5 zile</item>
+
+    </string-array>
+</resources>

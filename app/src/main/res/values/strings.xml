@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">test</string>
+    <string name="button_text">Apasa</string>
+    <string name="edit_hint">Edit me!</string>
+    <string name="text_nou">Ai apasat butonul!</string>
+</resources>

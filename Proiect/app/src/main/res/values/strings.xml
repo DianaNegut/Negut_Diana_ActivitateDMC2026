@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CloudPod</string>
+    <string name="search_hint">Cauta provider...</string>
+    <string name="all_categories">Toate</string>
+    <string name="add_review">Adauga rating</string>
+    <string name="see_on_map">Vezi pe harta</string>
+    <string name="save">Salveaza</string>
+    <string name="favorite">Adauga la favorite</string>
+    <string name="recommend">Recomand acest provider</string>
+    <string name="statistics">Statistici</string>
+    <string name="map">Harta</string>
+    <string name="restaurants">Provideri</string>
+    <string name="reviews">Ratinguri</string>
+    <string name="no_reviews">Nu exista ratinguri pentru acest provider.</string>
+    <string name="comment_hint">Scrie comentariul tau...</string>
+    <string name="select_date">Selecteaza data</string>
+    <string name="cancel">Anuleaza</string>
+    <string name="distribution_title">Distributie provideri pe regiuni</string>
+    <string name="avg_rating_title">Rating mediu pe regiuni</string>
+    <string name="recent_reviews">Ultimele ratinguri</string>
+    <string name="map_placeholder">Harta va fi disponibila in versiunea urmatoare.</string>
+</resources>

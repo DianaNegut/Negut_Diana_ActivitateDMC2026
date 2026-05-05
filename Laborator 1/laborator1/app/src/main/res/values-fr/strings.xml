@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">laborator 1</string>
+    <string name="hello_text">Bonjour, Diana!</string>
+    <string name="button_text">Appuyez sur ce bouton</string>
+    <string name="edit_text">Vous pouvez modifier ici!</string>
+    <string name="text_nou">Vous avez appuyé sur le bouton!</string>
+</resources>

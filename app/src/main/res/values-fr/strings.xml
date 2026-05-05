@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">test</string>
+    <string name="button_text">apasa dar in franceza</string>
+    <string name="edit_hint">edit me in franceza</string>
+    <string name="text_nou">ai apsat in franceza</string>
+</resources>

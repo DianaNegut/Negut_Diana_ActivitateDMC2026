@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">laborator 1</string>
+    <string name="hello_text">Buna ziua, Diana!</string>
+    <string name="button_text">buton de apasat</string>
+    <string name="edit_text">poti edita aici!</string>
+    <string name="text_nou">Ai apasat butonul!</string>
+</resources>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <!-- Categorie -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Regiune"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:textColor="@color/colorPrimary"
+        android:layout_marginBottom="8dp" />
+
+    <Spinner
+        android:id="@+id/spinnerCategoryDialog"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginBottom="4dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:background="@color/colorDivider" />
+
+    <!-- Sortare -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sortare"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:textColor="@color/colorPrimary"
+        android:layout_marginBottom="8dp" />
+
+    <RadioGroup
+        android:id="@+id/radioGroupSort"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RadioButton
+            android:id="@+id/radioDefault"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Implicit"
+            android:textSize="14sp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp" />
+
+        <RadioButton
+            android:id="@+id/radioNameAsc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nume A-Z"
+            android:textSize="14sp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp" />
+
+        <RadioButton
+            android:id="@+id/radioRatingDesc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Rating (Descrescator)"
+            android:textSize="14sp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp" />
+
+    </RadioGroup>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:background="@color/colorDivider" />
+
+    <!-- Filtre -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Filtre"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:textColor="@color/colorPrimary"
+        android:layout_marginBottom="8dp" />
+
+    <CheckBox
+        android:id="@+id/checkboxFavoritesOnly"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Doar favorite"
+        android:textSize="14sp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp" />
+
+</LinearLayout>
