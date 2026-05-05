@@ -25,7 +25,7 @@ import java.net.URLEncoder;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String API_KEY = "YOUR_API_KEY_HERE";
+    private static final String API_KEY = "";
 
     private static final int[] DAY_OPTIONS = {1, 5};
 
