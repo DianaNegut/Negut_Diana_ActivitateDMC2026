@@ -34,7 +34,7 @@
                 android:layout_marginBottom="12dp"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="4dp"
-                app:cardBackgroundColor="#1565C0">
+                app:cardBackgroundColor="#1E88E5">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -50,7 +50,7 @@
                         android:gravity="center"
                         android:textSize="24sp"
                         android:textStyle="bold"
-                        android:textColor="#1565C0"
+                        android:textColor="#1E88E5"
                         android:background="@drawable/circle_white_background"
                         android:layout_marginEnd="16dp" />
 

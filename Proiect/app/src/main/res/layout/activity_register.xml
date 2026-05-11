@@ -21,7 +21,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Cont nou"
+            android:text="@string/register_title"
             android:textSize="24sp"
             android:textStyle="bold"
             android:textColor="#212121"
@@ -30,9 +30,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Completeaza datele de mai jos"
+            android:text="@string/register_subtitle"
             android:textSize="14sp"
-            android:textColor="#757575"
+            android:textColor="#374151"
             android:layout_marginBottom="32dp" />
 
         <com.google.android.material.textfield.TextInputLayout
@@ -91,8 +91,8 @@
             android:id="@+id/btnRegister"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:text="Creeaza cont"
-            android:backgroundTint="#1565C0"
+            android:text="@string/register_btn"
+            android:backgroundTint="#1E88E5"
             android:layout_marginBottom="16dp" />
 
         <LinearLayout
@@ -105,15 +105,15 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Ai deja cont? "
-                android:textColor="#757575" />
+                android:text="@string/register_have_account"
+                android:textColor="#374151" />
 
             <TextView
                 android:id="@+id/tvGoToLogin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Autentifica-te"
-                android:textColor="#1565C0"
+                android:text="@string/register_login_link"
+                android:textColor="#1E88E5"
                 android:textStyle="bold" />
         </LinearLayout>
 

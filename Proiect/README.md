@@ -1,11 +1,11 @@
-# Food Corner — Android App
+# CloudPod — Android App
 
-Aplicatie Android pentru descoperirea si recenzarea restaurantelor locale. Proiect universitar (Anul 4 Android).
+Aplicatie Android pentru descoperirea si evaluarea furnizorilor de stocare cloud descentralizata. Proiect universitar (Anul 4 Android).
 
 - **Package:** `com.example.proiect`
 - **Limbaj:** Java
 - **minSdk:** 24
-- **Tema:** Material3 NoActionBar, culoare primara rosu `#E53935`
+- **Tema:** Material3 NoActionBar, culoare primara albastru `#1E88E5`
 
 ---
 
@@ -14,29 +14,33 @@ Aplicatie Android pentru descoperirea si recenzarea restaurantelor locale. Proie
 ```
 app/src/main/java/com/example/proiect/
 ├── model/
-│   ├── Restaurant.java              # POJO: id, name, category, address, schedule, phone, imageUrl, lat/lng
-│   └── Review.java                  # POJO: id, restaurantId, comment, rating, date, recommended
+│   ├── Restaurant.java              # POJO provider: id, name, region, nodeUrl, storageCapacity,
+│   │                                #   peerId, imageUrl, lat/lng, pricePerGB, uptime, addedBy
+│   └── Review.java                  # POJO rating: id, providerId, comment, rating, date, recommend, username
 ├── adapter/
-│   ├── RestaurantGridAdapter.java   # Adapter GridView cu color-coding pe categorie
-│   └── ReviewAdapter.java           # Adapter ListView recenzii (showRestaurantName boolean)
+│   ├── RestaurantGridAdapter.java   # Adapter GridView cu color-coding pe regiune, badge top 3, compare overlay
+│   └── ReviewAdapter.java           # Adapter ListView ratinguri (showProviderName boolean)
 ├── view/
 │   ├── NonScrollListView.java       # ListView care isi adapteaza inaltimea (pt ScrollView parinte)
 │   ├── PieChartView.java            # Pie chart pe Canvas, fara librarii externe
 │   └── BarChartView.java            # Bar chart pe Canvas, fara librarii externe
 ├── database/
-│   └── DatabaseHelper.java          # SQLiteOpenHelper singleton, versiunea 6
-├── SampleData.java                  # Ramas in proiect dar neutilizat (inlocuit de DB)
+│   └── DatabaseHelper.java          # SQLiteOpenHelper singleton, versiunea 7
+├── RemoteConfig.java                # Fetch + parsare JSON de la Gist (imagini default per regiune)
+├── SampleData.java                  # Neutilizat
 ├── LoginActivity.java
 ├── RegisterActivity.java
 ├── MainActivity.java
-├── RestaurantDetailActivity.java
+├── RestaurantDetailActivity.java    # Detalii provider
 ├── ProfileActivity.java
-├── AddRestaurantActivity.java
-├── EditRestaurantActivity.java      # Editare restaurant (doar userul care l-a adaugat)
-├── AddReviewActivity.java
+├── AddRestaurantActivity.java       # Adaugare provider
+├── EditRestaurantActivity.java      # Editare provider (doar userul care l-a adaugat)
+├── AddReviewActivity.java           # Adaugare rating
 ├── StatisticsActivity.java
 ├── SettingsActivity.java
-└── MapActivity.java
+├── MapActivity.java                 # Harta OSMDroid cu markere
+├── CompareActivity.java             # Tabel comparativ 2 provideri
+└── WebViewActivity.java             # Browser integrat pentru Node URL
 ```
 
 ---
@@ -52,6 +56,12 @@ Urmatoarele deschideri:
 
 Logout:
   MainActivity → buton Logout → LoginActivity
+
+Comparare:
+  MainActivity (long press card) → selectie → tap al doilea card → CompareActivity
+
+WebView:
+  RestaurantDetailActivity → tap pe Node URL → WebViewActivity
 ```
 
 ---
@@ -59,194 +69,165 @@ Logout:
 ## Activities
 
 ### LoginActivity *(launcher)*
-- Verifica la start daca exista sesiune activa (`logged_user` in DB) → sare direct la MainActivity
+- Verifica la start daca exista sesiune activa → sare direct la MainActivity
 - Validare campuri goale
-- Link catre RegisterActivity
 
 ### RegisterActivity
-- Validari: username minim 3 caractere, parola minim 6 caractere, parole identice, username unic
+- Validari: username minim 3 caractere, parola minim 6, parole identice, username unic
 - Parola salvata cu hash SHA-256
-- Erorile de validare apar **sub camp** (setate pe `TextInputLayout`, nu pe `TextInputEditText`) si ca **Snackbar** vizibil in partea de jos — mai evident decat iconita de eroare
-- Campul parola are `helperText="Minim 6 caractere"` permanent vizibil
-- Dupa inregistrare, logheaza automat si navigheaza la MainActivity
+- Dupa inregistrare, logheaza automat
 
 ### MainActivity
-- Verifica sesiunea la `onCreate` — redirectioneaza la Login daca nu e logat
-- GridView 2 coloane cu toate restaurantele
-- Carduri restaurant redesenate (`item_restaurant_grid.xml`):
-  - Header colorat per categorie (130dp) cu emoji watermark semi-transparent (🍖🍕🍔🍜🥗)
-  - Gradient inchis la baza header-ului pentru adancime vizuala
-  - Chip alb-rotunjit (bottom-left) cu textul categoriei in culoarea categoriei
-  - Border (`strokeColor`) pe card, colorat dupa categorie (1.5dp)
-  - Sectiunea info: **nume** bold + **adresa** (1 linie, trunchiat) + **stea + nota numerica** (e.g. "4.2")
-  - Rating provine din DB real (`db.getAverageRating()`), nu din SampleData
-- `RestaurantGridAdapter` primeste acum `DatabaseHelper db` ca parametru
-- SearchView — filtrare live dupa nume
-- Dialog filtrare/sortare: Spinner categorie, RadioGroup sortare (default / A-Z / rating desc), CheckBox favorite
+- GridView 2 coloane cu toti providerii
+- **Long press** pe card → intra in **compare mode**: banner albastru cu numele selectat, overlay ✓ pe card
+- **Tap pe al doilea card** in compare mode → deschide CompareActivity
+- **Badge-uri top 3** pe primele 3 carduri dupa rating: 🥇🥈🥉
+- SearchView, dialog filtrare/sortare (regiune, A-Z, rating, favorite)
+- Sortare default: providerii din **regiunea preferata** (SharedPreferences) apar primii
 - Iconita filtru se coloreaza galben cand un filtru e activ
-- Buton **`+` in toolbar** → deschide AddRestaurantActivity (meniu `menu_main.xml`)
-- Buton **Profil in toolbar** → deschide ProfileActivity
-- **Setari in meniul toolbar** (`...`) → deschide SettingsActivity
-- Buton **Logout** in bara de jos
 
 ### RestaurantDetailActivity
-- Preia `restaurant_id` din Intent
-- **Header imagine (200dp):** daca `restaurant.imageUrl` exista ca fisier, afiseaza imaginea (`centerCrop`); altfel afiseaza litera categoriei ca fallback
-- Afiseaza: nume, categorie, adresa, program, telefon
-- **Site web** — afisat doar daca `restaurant.website` nu e gol (`tvWebsite` e `GONE` implicit); click deschide browser-ul; daca URL-ul nu incepe cu `http` se adauga automat `https://`
-- RatingBar cu media calculata din recenzii
-- CheckBox Favorit — persista in tabela `favorites` din DB
-- Lista recenzii cu ReviewAdapter; fiecare recenzie are butoane **Editeaza** si **Sterge**
-  - **Editeaza**: dialog cu EditText (comentariu), RatingBar (nota), Switch (recomandare) — salveaza cu `db.updateReview()`
-  - **Sterge**: dialog de confirmare — sterge cu `db.deleteReview()`
-- Butoane catre MapActivity si AddReviewActivity
+- Header imagine: poza locala → imagine remote (Glide) → litera regiunii ca fallback
+- Afiseaza: nume, regiune, URL nod (clickabil → WebViewActivity), stocare, Peer ID, Pret/GB, Uptime%
+- RatingBar cu media din DB, CheckBox Favorit
+- Lista ratinguri cu butoane Editeaza / Sterge
 
-### AddReviewActivity
-- Poate fi deschis cu sau fara `restaurant_id` in Intent
-  - Cu `restaurant_id`: cardul de selectie restaurant e ascuns
-  - Fara `restaurant_id`: apare Spinner cu toate restaurantele
-- Formular: comentariu (EditText), nota (RatingBar), data (DatePickerDialog), recomandare (Switch)
-- Validare: comentariu si nota sunt obligatorii
-- Salvare cu ProgressBar + delay 1s (Handler), scriere in DB
+### CompareActivity *(nou)*
+- Primeste 2 `provider_id` prin Intent
+- Tabel comparativ: Nume, Regiune, Capacitate stocare, Pret/GB, Uptime, Rating mediu
+- Valorile mai bune (pret mic, uptime mare, rating mare) apar in **verde**
+- Rand final 🏆 cu verdict ✅/❌ bazat pe scor calculat
 
-### StatisticsActivity
-- **Card profil utilizator** (primul) — avatar circular cu prima litera din username, fundal rosu; afiseaza numele si categoria preferata
-- **Top 5 Restaurante** — sectiune colapsabila (header clickabil + sageata); query SQL cu JOIN+AVG+ORDER BY+LIMIT, nu in memorie
-- **Distributia pe categorii** — pie chart colapsabil (ascuns implicit)
-- **Rating mediu pe categorii** — bar chart colapsabil (ascuns implicit)
-- **Recenzii recente** — afiseaza 5 initial, buton "Vezi mai multe" incarca cate 3 in plus; dispare cand s-au afisat toate
-- Toate sectiunile cu chart/lista sunt restranse implicit pentru a nu incarca ecranul
-
-### ProfileActivity
-- Accesibila din toolbar-ul MainActivity (iconita Profil)
-- Afiseaza avatarul (prima litera din username) si numele curent
-- **Restaurantele mele:** lista restaurantelor adaugate de userul curent (`added_by`); afiseaza 3 initial, "Vezi mai multe" adauga cate 3; click pe un rand → `EditRestaurantActivity`; lista se reimprospateza la revenire cu `RESULT_OK`
-- **Recenziile mele:** lista recenziilor adaugate de utilizatorul curent (cu numele restaurantului); butoane Editeaza si Sterge pe fiecare recenzie
-- **Schimbare username:** validare minim 3 caractere, username unic; actualizeaza `users`, `logged_user` si `user_name` in DB
-- **Schimbare parola:** verifica parola actuala, validare minim 6 caractere, confirmare parola noua; salveaza hash SHA-256
+### WebViewActivity *(nou)*
+- Primeste URL si titlu prin Intent
+- Browser integrat cu bara de progres
+- Titlul toolbar-ului se actualizeaza cu titlul paginii
+- Back → navigare inapoi in pagina (history), apoi inchidere activitate
 
 ### AddRestaurantActivity
-- Accesibila din toolbar-ul MainActivity (iconita `+`)
-- **Fotografie:** zona clickabila (200dp) la topul formularului; dialog "Galerie foto / Camera"; imaginea e copiata in `getFilesDir()/restaurant_images/` si calea absoluta e salvata in `image_url`; dupa selectie apare butonul "✎ Schimba"
-  - Camera: cere permisiunea `CAMERA` la runtime; URI generat prin `FileProvider`
-  - Galerie: `ActivityResultContracts.GetContent()` — nu necesita permisiune pe Android 13+
-- Campuri: nume si adresa (obligatorii), categorie (Spinner), telefon, latitudine/longitudine, **site web** (optionale)
-- **Program** — doua butoane outlined ("Deschidere" / "Inchidere") care deschid `TimePickerDialog` (format 24h); dupa selectarea ambelor ore apare un preview text; salvat ca `HH:mm - HH:mm`
-- Salveaza `added_by = loggedUser` in DB — necesar pentru restrictia de editare
-- Validare: nume si adresa obligatorii, coordonate GPS ca numere valide
-- Salveaza in tabela `restaurants` din DB cu ID generat automat
+- Fotografie: galerie / camera (FileProvider, permisiune runtime)
+- Campuri: nume si URL nod (obligatorii), regiune (Spinner), Peer ID, stocare, pret/GB, uptime, lat/lng
 - ProgressBar + delay 800ms la salvare
 
 ### EditRestaurantActivity
-- Accesibila din ProfileActivity → "Restaurantele mele" → click pe restaurant
-- Primeste `restaurant_id` din Intent
-- **Verificare permisiune:** la `onCreate` compara `restaurant.addedBy` cu `db.getLoggedUser()` — daca nu coincid, `finish()` imediat cu Toast
-- Pre-populeaza toate campurile cu datele existente (inclusiv selectia categoriei in Spinner)
-- **Fotografie:** aceeasi logica de picker ca la AddRestaurantActivity; la prefill verifica daca fisierul exista (`File.exists()`) inainte de a afisa imaginea salvata
-- **Program:** parseza programul existent (`HH:mm - HH:mm`) si populeaza automat butoanele cu orele salvate; acelasi TimePicker ca la adaugare
-- Face `db.updateRestaurant(restaurant)` — UPDATE, nu INSERT nou
-- **Sterge restaurant:** buton rosu "Sterge restaurantul" la baza formularului; dialog de confirmare; apeleaza `db.deleteRestaurant(id)` care sterge cascadat recenziile si favoritele asociate; `setResult(RESULT_OK)` + `finish()`
-- La succes (save sau delete): `setResult(RESULT_OK)` + `finish()` pentru a semnala ProfileActivity sa reimprospateze lista
-- ProgressBar + delay 600ms la salvare / 400ms la stergere
+- Verificare permisiune: `provider.addedBy == loggedUser`
+- Header imagine: poza locala → imagine remote (Glide) → nimic
+- Sterge provider cu confirmare → stergere cascadata ratinguri + favorite
+
+### AddReviewActivity
+- Cu sau fara `provider_id` in Intent
+- DatePickerDialog pentru data, Switch recomandare
+
+### StatisticsActivity
+- Card profil cu regiune preferata (din SharedPreferences)
+- Top 5 Provideri (colapsabil), Pie chart regiuni, Bar chart rating/regiune
+- Ratinguri recente cu paginare
+
+### ProfileActivity
+- Providerii mei + Ratingurile mele
+- Schimbare username / parola
 
 ### SettingsActivity
-- Accesibila din toolbar-ul MainActivity (meniu `...` → Setari)
-- Afiseaza categoria preferata curenta (din `user_prefs`)
-- Spinner cu toate categoriile (Toate, Romanesc, Italian, Fast-Food, Asian, Vegan)
-- Buton Salveaza — scrie noua valoare in DB cu `db.setUserPref("preferred_category", ...)`
-- Valoarea actualizata apare imediat si in StatisticsActivity
+- Regiune preferata salvata in **SharedPreferences** (`cloudpod_prefs`, cheia `preferred_region`)
+- Afecteza sortarea din MainActivity si cardul din StatisticsActivity
 
 ### MapActivity
-- Exista ca Activity dar Google Maps nu e integrat inca
-- Primeste optional `restaurant_id` din Intent (pentru centrat pe un restaurant)
-- Necesita Google Maps API key
+- Harta **OpenStreetMap** (OSMDroid) cu markere pentru toti cei 10 provideri
+- Multi-touch zoom, click pe marker → InfoWindow cu regiune, stocare, pret
+- Daca vine cu `provider_id`, centreaza pe acel provider cu zoom 8
 
 ---
 
 ## Persistenta (SQLite)
 
-Baza de date: `food_corner.db`, stocata in `/data/data/com.example.proiect/databases/`.
-Gestionata prin `database/DatabaseHelper.java` (singleton, `SQLiteOpenHelper`, versiunea curenta: **5**).
+Baza de date: `cloudpod.db`, versiunea **7**.
 
-| Tabela | Coloane | Continut |
+| Tabela | Coloane |
+|---|---|
+| `providers` | id, name, region, node_url, storage_capacity, peer_id, image_url, latitude, longitude, price_per_gb, uptime, added_by |
+| `ratings` | id, provider_id, comment, rating, date, recommend, username |
+| `favorites` | provider_id |
+| `user_prefs` | key, value (`logged_user`, `user_name`) |
+| `users` | id, username, password_hash |
+
+**SharedPreferences** (`cloudpod_prefs`): `preferred_region` — scrisa in SettingsActivity, citita in MainActivity si StatisticsActivity.
+
+---
+
+## Date remote (JSON)
+
+**RemoteConfig.java** face fetch la pornire din Gist:
+```
+https://gist.githubusercontent.com/DianaNegut/.../raw/cloudpod_config.json
+```
+JSON-ul contine URL-uri de imagini default per regiune. Parsare cu `org.json.JSONObject`, incarcare imagini cu **Glide**.
+
+---
+
+## Cerinte acoperite
+
+| # | Cerinta | Implementare |
 |---|---|---|
-| `restaurants` | id, name, category, address, schedule, phone, image_url, latitude, longitude, website, **added_by** | 10 restaurante (seed la prima instalare) |
-| `reviews` | id (AUTOINCREMENT), restaurant_id, comment, rating, date, recommend, username | 13 recenzii seed + recenzii adaugate de utilizator |
-| `favorites` | restaurant_id (PK) | ID-urile restaurantelor marcate ca favorite |
-| `user_prefs` | key (PK), value | `logged_user`, `user_name`, `preferred_category` |
-| `users` | id (AUTOINCREMENT), username (UNIQUE), password_hash | Conturi utilizatori, parola SHA-256 |
-
-**API-ul `DatabaseHelper`:**
-- `addRestaurant(restaurant)`, `getRestaurants()`, `getRestaurantById(id)`, `getRestaurantsByUser(username)`, `updateRestaurant(restaurant)`, `deleteRestaurant(restaurantId)`, `getTopRatedRestaurants(limit)`
-- `getReviewsForRestaurant(restaurantId)`, `getRecentReviews(limit)`, `getAverageRating(restaurantId)`, `addReview(review)`, `updateReview(review)`, `deleteReview(reviewId)`, `getReviewsByUser(username)`
-- `isFavorite(restaurantId)`, `setFavorite(restaurantId, bool)`, `getFavoriteIds()`
-- `getUserPref(key, default)`, `setUserPref(key, value)`
-- `registerUser(username, password)`, `loginUser(username, password)`, `usernameExists(username)`
-- `updateUsername(oldUsername, newUsername)`, `updatePassword(username, oldPassword, newPassword)`
-- `getLoggedUser()`, `setLoggedUser(username)`, `logout()`
-
-Nu se mai folosesc SharedPreferences in niciun loc.
-
-### Istoricul versiunilor DB
-
-| Versiune | Modificare |
-|---|---|
-| 1–3 | Versiuni initiale |
-| 4 | Adaugat tabela `users`, parola SHA-256 |
-| 5 | Adaugat coloana `website TEXT` in `restaurants` (migrare cu `ALTER TABLE`, fara DROP) |
-| 6 | Adaugat coloana `added_by TEXT` in `restaurants` — stocheaza username-ul celui care a adaugat restaurantul |
-
-> **Regula migrare:** de la v4 in sus se foloseste `ALTER TABLE` in `onUpgrade` pentru a pastra datele existente. Nu mai face DROP + recreare decat daca e absolut necesar (schimbare incompatibila de schema).
-
-### Note arhitecturale — sortare dupa rating
-
-**`getRestaurants()`** returneaza toate restaurantele sortate dupa nume (fara rating).
-
-**Sortarea dupa rating in MainActivity** se face *in memorie* (comparator Java), nu la nivel de DB — apeleaza `getAverageRating(id)` per restaurant dupa ce lista e incarcata.
-
-**`getTopRatedRestaurants(limit)`** face totul intr-un singur query SQL cu `JOIN + AVG + ORDER BY + LIMIT` — folosit in StatisticsActivity pentru Top 5. Nu folosi `getRestaurants()` + comparator pentru asta, ar face N query-uri suplimentare.
+| 1 | Minim 5 activitati | 13 activitati conectate |
+| 2 | Controale simple | TextView, EditText, Button, CheckBox, Spinner, ProgressBar, RatingBar, Switch |
+| 3 | Controale complexe | GridView, ListView, DatePickerDialog |
+| 4 | Custom adapter | `RestaurantGridAdapter`, `ReviewAdapter` |
+| 5 | SharedPreferences | `cloudpod_prefs` → `preferred_region` |
+| 6 | SQLite | `cloudpod.db`, versiunea 7, 5 tabele |
+| 7 | JSON/XML remote | `RemoteConfig` fetch Gist → parsare JSON → imagini Glide |
+| 8 | Harta cu markere | OSMDroid (OpenStreetMap), markere pentru toti providerii |
+| 9 | Grafica 2D | `PieChartView` + `BarChartView` custom pe Canvas |
 
 ---
 
-## Drawables notabile
+## Dependente
 
-| Fișier | Descriere |
-|---|---|
-| `bg_category_tag.xml` | Background chip categorie (folosit anterior in adapter) |
-| `bg_spinner.xml` | Background Spinner custom |
-| `circle_white_background.xml` | Oval alb pentru avatar litera (ProfileActivity, StatisticsActivity) |
-| `ic_arrow_down.xml` | Chevron pentru sectiunile colapsabile din StatisticsActivity |
-| `gradient_card_header.xml` | Gradient transparent → #66000000, overlay pe header carduri restaurant |
-| `bg_chip_white.xml` | Dreptunghi alb semi-transparent (corners 12dp) — chip categorie pe card |
-| `ic_star_filled.xml` | Stea galbena (#FFC107) — iconita rating in cardurile restaurant |
+```kotlin
+implementation("com.github.bumptech.glide:glide:4.16.0")   // incarcare imagini remote
+implementation("org.osmdroid:osmdroid-android:6.1.18")      // harta OpenStreetMap
+```
 
 ---
 
-## Layouts relevante
+## Internationalizare
 
-| Layout | Folosit de |
+| Folder | Limba |
 |---|---|
-| `activity_login.xml` | LoginActivity |
-| `activity_register.xml` | RegisterActivity |
-| `activity_main.xml` | MainActivity |
-| `activity_restaurant_detail.xml` | RestaurantDetailActivity |
-| `activity_add_review.xml` | AddReviewActivity |
-| `activity_statistics.xml` | StatisticsActivity |
-| `activity_map.xml` | MapActivity |
-| `activity_profile.xml` | ProfileActivity |
-| `activity_add_restaurant.xml` | AddRestaurantActivity |
-| `activity_edit_restaurant.xml` | EditRestaurantActivity |
-| `activity_settings.xml` | SettingsActivity |
-| `dialog_filter.xml` | Dialog filtrare din MainActivity |
-| `dialog_edit_review.xml` | Dialog editare recenzie din RestaurantDetailActivity |
-| `item_restaurant_grid.xml` | RestaurantGridAdapter |
-| `item_review.xml` | ReviewAdapter (cu butoane Editeaza/Sterge) |
-| `menu_main.xml` | Toolbar MainActivity (buton Adauga Restaurant) |
+| `values/` | Romana (default) |
+| `values-en/` | Engleza |
+| `values-fr/` | Franceza |
 
 ---
 
-## Ce urmeaza (TODO)
+## Color-coding regiuni
 
-- [ ] Integrare Google Maps in MapActivity (necesita API key in `local.properties`)
-- [x] Ecran Setari — modificare `preferred_category` (SettingsActivity, accesibil din toolbar)
-- [x] Stergere / editare recenzie — butoane in fiecare item, dialog inline
+| Regiune | Culoare |
+|---|---|
+| EU-West | `#1E88E5` |
+| EU-East | `#00695C` |
+| NA | `#4527A0` |
+| Asia-Pacific | `#E65100` |
+| South-America | `#2E7D32` |
+
+---
+
+## Seed data — 10 provideri
+
+| ID | Nume | Regiune | Stocare | Pret/GB | Uptime |
+|---|---|---|---|---|---|
+| 1 | StoragePod EU-1 | EU-West | 2 TB | $0.020 | 99.9% |
+| 2 | CloudVault Berlin | EU-West | 5 TB | $0.018 | 99.7% |
+| 3 | IronStore Paris | EU-West | 3 TB | $0.022 | 99.5% |
+| 4 | BalticNode | EU-East | 1 TB | $0.015 | 98.5% |
+| 5 | EastCloud Warszawa | EU-East | 3 TB | $0.016 | 99.1% |
+| 6 | NovaPod NYC | NA | 10 TB | $0.025 | 99.8% |
+| 7 | SteelVault Texas | NA | 8 TB | $0.022 | 99.5% |
+| 8 | NorthNode Toronto | NA | 4 TB | $0.023 | 99.3% |
+| 9 | AsiaPod Singapore | Asia-Pacific | 3 TB | $0.019 | 99.6% |
+| 10 | SouthStore Sao Paulo | South-America | 1 TB | $0.017 | 98.9% |
+
+---
+
+## TODO
+
+- [ ] Google Maps (necesita API key — inlocuit cu OSMDroid)

@@ -11,12 +11,19 @@
         android:layout_height="wrap_content"
         android:minHeight="?attr/actionBarSize"
         android:background="@color/colorPrimary"
-        app:title="Harta"
         app:titleTextColor="@color/colorOnPrimary"
         app:navigationIcon="@drawable/ic_arrow_back" />
 
-    <org.osmdroid.views.MapView
-        android:id="@+id/mapView"
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:max="100"
+        android:visibility="visible" />
+
+    <WebView
+        android:id="@+id/webView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />

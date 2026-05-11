@@ -82,6 +82,36 @@
     </RelativeLayout>
 
     <LinearLayout
+        android:id="@+id/compareBanner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#E3F2FD"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        android:gravity="center_vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tvCompareBannerText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="#1565C0"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btnCancelCompare"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="Anuleaza"
+            android:textSize="12sp"
+            android:backgroundTint="@color/colorPrimary"
+            android:textColor="#FFFFFF" />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:background="@color/colorPrimary"

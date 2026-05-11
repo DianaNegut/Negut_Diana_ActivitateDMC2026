@@ -22,18 +22,18 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="CloudPod"
+            android:text="@string/login_title"
             android:textSize="28sp"
             android:textStyle="bold"
-            android:textColor="#1565C0"
+            android:textColor="#1E88E5"
             android:layout_marginBottom="4dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Autentifica-te pentru a continua"
+            android:text="@string/login_subtitle"
             android:textSize="14sp"
-            android:textColor="#757575"
+            android:textColor="#374151"
             android:layout_marginBottom="40dp" />
 
         <com.google.android.material.textfield.TextInputLayout
@@ -72,8 +72,8 @@
             android:id="@+id/btnLogin"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:text="Autentificare"
-            android:backgroundTint="#1565C0"
+            android:text="@string/login_btn"
+            android:backgroundTint="#1E88E5"
             android:layout_marginBottom="16dp" />
 
         <LinearLayout
@@ -85,15 +85,15 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Nu ai cont? "
-                android:textColor="#757575" />
+                android:text="@string/login_no_account"
+                android:textColor="#374151" />
 
             <TextView
                 android:id="@+id/tvGoToRegister"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Inregistreaza-te"
-                android:textColor="#1565C0"
+                android:text="@string/login_register_link"
+                android:textColor="#1E88E5"
                 android:textStyle="bold" />
         </LinearLayout>
 

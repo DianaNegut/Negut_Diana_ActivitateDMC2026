@@ -1,23 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- App -->
     <string name="app_name">CloudPod</string>
+
+    <!-- Login -->
+    <string name="login_title">CloudPod</string>
+    <string name="login_subtitle">Autentifica-te pentru a continua</string>
+    <string name="login_btn">Autentificare</string>
+    <string name="login_no_account">Nu ai cont? </string>
+    <string name="login_register_link">Inregistreaza-te</string>
+
+    <!-- Register -->
+    <string name="register_title">Cont nou</string>
+    <string name="register_subtitle">Completeaza datele de mai jos</string>
+    <string name="register_btn">Creeaza cont</string>
+    <string name="register_have_account">Ai deja cont? </string>
+    <string name="register_login_link">Autentifica-te</string>
+
+    <!-- Main -->
     <string name="search_hint">Cauta provider...</string>
+    <string name="logout">Logout</string>
     <string name="all_categories">Toate</string>
-    <string name="add_review">Adauga rating</string>
-    <string name="see_on_map">Vezi pe harta</string>
-    <string name="save">Salveaza</string>
-    <string name="favorite">Adauga la favorite</string>
-    <string name="recommend">Recomand acest provider</string>
-    <string name="statistics">Statistici</string>
-    <string name="map">Harta</string>
+    <string name="filter_title">Filtrare si Sortare</string>
+    <string name="filter_apply">Aplica</string>
+    <string name="filter_cancel">Anuleaza</string>
+    <string name="filter_reset">Reseteaza</string>
+
+    <!-- Provider -->
     <string name="restaurants">Provideri</string>
+    <string name="add_provider">Adauga Provider</string>
+    <string name="save_changes">Salveaza modificarile</string>
+    <string name="delete_provider">Sterge provider</string>
+    <string name="add_photo">Adauga fotografie</string>
+    <string name="gallery_or_camera">Galerie sau Camera</string>
+    <string name="change_photo">✎ Schimba</string>
+    <string name="general_info">Informatii generale</string>
+    <string name="region_label">Regiune *</string>
+    <string name="ipfs_details">Detalii tehnice IPFS</string>
+    <string name="location_optional">Locatie (optional)</string>
+
+    <!-- Detail -->
+    <string name="see_on_map">Vezi pe harta</string>
+    <string name="add_review">Adauga rating</string>
+    <string name="favorite">Adauga la favorite</string>
     <string name="reviews">Ratinguri</string>
     <string name="no_reviews">Nu exista ratinguri pentru acest provider.</string>
+
+    <!-- Add Review -->
+    <string name="provider_label">Provider</string>
+    <string name="comment_label">Comentariu</string>
+    <string name="rating_label">Nota (1-5 stele)</string>
+    <string name="date_label">Data ratingului</string>
+    <string name="recommend">Recomand acest provider</string>
     <string name="comment_hint">Scrie comentariul tau...</string>
     <string name="select_date">Selecteaza data</string>
+    <string name="save">Salveaza</string>
     <string name="cancel">Anuleaza</string>
+
+    <!-- Statistics -->
+    <string name="statistics">Statistici</string>
+    <string name="preferred_region_label">Regiune preferata: </string>
+    <string name="top_providers">Top 5 Provideri</string>
     <string name="distribution_title">Distributie provideri pe regiuni</string>
     <string name="avg_rating_title">Rating mediu pe regiuni</string>
     <string name="recent_reviews">Ultimele ratinguri</string>
+    <string name="see_more">Vezi mai multe</string>
+
+    <!-- Profile -->
+    <string name="change_username">Schimba numele de utilizator</string>
+    <string name="save_username">Salveaza numele</string>
+    <string name="my_providers">Providerii mei</string>
+    <string name="no_providers">Nu ai adaugat inca niciun provider.</string>
+    <string name="my_reviews">Ratingurile mele</string>
+    <string name="no_my_reviews">Nu ai adaugat inca niciun rating.</string>
+    <string name="change_password">Schimba parola</string>
+
+    <!-- Settings -->
+    <string name="preferred_region">Regiune preferata</string>
+    <string name="preferred_region_desc">Selecteaza regiunea de provideri pe care o preferi. Aceasta este afisata in ecranul de Statistici.</string>
+    <string name="current_region">Regiunea curenta:</string>
+    <string name="save_preference">Salveaza preferinta</string>
+
+    <!-- Map -->
+    <string name="map">Harta</string>
+    <string name="map_title">Harta Providerilor</string>
     <string name="map_placeholder">Harta va fi disponibila in versiunea urmatoare.</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.example.proiect;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -129,7 +130,7 @@ public class StatisticsActivity extends AppCompatActivity {
             TextView tvRank = new TextView(this);
             tvRank.setText(String.valueOf(i + 1) + ".");
             tvRank.setTextSize(15);
-            tvRank.setTextColor(0xFF1565C0);
+            tvRank.setTextColor(0xFF1E88E5);
             tvRank.setTypeface(null, android.graphics.Typeface.BOLD);
             tvRank.setMinWidth((int) (28 * getResources().getDisplayMetrics().density));
             row.addView(tvRank);
@@ -149,7 +150,7 @@ public class StatisticsActivity extends AppCompatActivity {
             TextView tvRegion = new TextView(this);
             tvRegion.setText(r.region);
             tvRegion.setTextSize(12);
-            tvRegion.setTextColor(0xFF757575);
+            tvRegion.setTextColor(0xFF374151);
             info.addView(tvRegion);
 
             row.addView(info);
@@ -168,7 +169,7 @@ public class StatisticsActivity extends AppCompatActivity {
             TextView tvAvg = new TextView(this);
             tvAvg.setText(String.format(Locale.getDefault(), "%.1f / 5", avg));
             tvAvg.setTextSize(12);
-            tvAvg.setTextColor(0xFF757575);
+            tvAvg.setTextColor(0xFF374151);
             tvAvg.setGravity(Gravity.CENTER);
             ratingLayout.addView(tvAvg);
 
@@ -189,7 +190,8 @@ public class StatisticsActivity extends AppCompatActivity {
 
     private void loadUserPrefs() {
         String name   = db.getUserPref("user_name", "Utilizator");
-        String region = db.getUserPref("preferred_region", "Toate");
+        SharedPreferences prefs = getSharedPreferences(SettingsActivity.PREFS_NAME, MODE_PRIVATE);
+        String region = prefs.getString(SettingsActivity.KEY_REGION, "Toate");
         tvUserName.setText(name);
         tvPreferredCategory.setText(region);
         tvAvatarLetter.setText(name.isEmpty() ? "?" : String.valueOf(name.charAt(0)).toUpperCase());

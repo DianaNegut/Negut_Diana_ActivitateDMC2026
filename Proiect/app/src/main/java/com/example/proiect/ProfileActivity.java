@@ -192,7 +192,7 @@ public class ProfileActivity extends AppCompatActivity {
             TextView tvDetails = new TextView(this);
             tvDetails.setText(r.region + " · " + r.nodeUrl);
             tvDetails.setTextSize(12);
-            tvDetails.setTextColor(0xFF757575);
+            tvDetails.setTextColor(0xFF374151);
             tvDetails.setMaxLines(1);
             tvDetails.setEllipsize(android.text.TextUtils.TruncateAt.END);
             info.addView(tvDetails);
@@ -202,7 +202,7 @@ public class ProfileActivity extends AppCompatActivity {
             TextView tvEdit = new TextView(this);
             tvEdit.setText("Editeaza");
             tvEdit.setTextSize(13);
-            tvEdit.setTextColor(0xFF1565C0);
+            tvEdit.setTextColor(0xFF1E88E5);
             tvEdit.setTypeface(null, android.graphics.Typeface.BOLD);
             tvEdit.setPadding(pad, 0, 0, 0);
             row.addView(tvEdit);

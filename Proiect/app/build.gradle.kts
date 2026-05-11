@@ -36,6 +36,8 @@ android {
 }
 
 dependencies {
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    implementation("org.osmdroid:osmdroid-android:6.1.18")
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)

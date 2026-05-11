@@ -11,30 +11,53 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import android.util.Log;
+import com.bumptech.glide.Glide;
 import com.example.proiect.R;
+import com.example.proiect.RemoteConfig;
 import com.example.proiect.database.DatabaseHelper;
 import com.example.proiect.model.Restaurant;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class RestaurantGridAdapter extends BaseAdapter {
+
+    private static final String[] BADGES = {"🥇", "🥈", "🥉"};
 
     private final Context context;
     private List<Restaurant> providers;
     private final LayoutInflater inflater;
     private final DatabaseHelper db;
+    private final Map<Integer, String> badgeMap = new HashMap<>();
+    private int selectedId = -1;
 
     public RestaurantGridAdapter(Context context, List<Restaurant> providers, DatabaseHelper db) {
         this.context   = context;
         this.providers = providers;
         this.inflater  = LayoutInflater.from(context);
         this.db        = db;
+        loadTopBadges();
+    }
+
+    private void loadTopBadges() {
+        badgeMap.clear();
+        List<Restaurant> top = db.getTopRatedProviders(3);
+        for (int i = 0; i < top.size(); i++) {
+            badgeMap.put(top.get(i).id, BADGES[i]);
+        }
     }
 
     public void updateData(List<Restaurant> newData) {
         this.providers = newData;
+        notifyDataSetChanged();
+    }
+
+    public void setSelectedId(int id) {
+        this.selectedId = id;
         notifyDataSetChanged();
     }
 
@@ -55,7 +78,10 @@ public class RestaurantGridAdapter extends BaseAdapter {
             holder.tvChip           = convertView.findViewById(R.id.tvCategoryChip);
             holder.tvName           = convertView.findViewById(R.id.tvRestaurantName);
             holder.tvAddress        = convertView.findViewById(R.id.tvAddress);
-            holder.tvRating         = convertView.findViewById(R.id.tvRatingValue);
+            holder.tvRating              = convertView.findViewById(R.id.tvRatingValue);
+            holder.tvBadge               = convertView.findViewById(R.id.tvBadge);
+            holder.viewSelectionOverlay  = convertView.findViewById(R.id.viewSelectionOverlay);
+            holder.tvSelectionCheck      = convertView.findViewById(R.id.tvSelectionCheck);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -74,10 +100,21 @@ public class RestaurantGridAdapter extends BaseAdapter {
             holder.ivPhoto.setVisibility(View.VISIBLE);
             holder.tvEmoji.setVisibility(View.GONE);
         } else {
-            holder.ivPhoto.setImageBitmap(null);
-            holder.ivPhoto.setVisibility(View.GONE);
-            holder.tvEmoji.setVisibility(View.VISIBLE);
-            holder.tvEmoji.setText("☁");
+            String remoteUrl = RemoteConfig.getImageForRegion(r.region);
+            Log.d("RemoteConfig", "Adapter [" + r.name + "] region=" + r.region + " remoteUrl=" + remoteUrl);
+            if (remoteUrl != null) {
+                holder.ivPhoto.setVisibility(View.VISIBLE);
+                holder.tvEmoji.setVisibility(View.GONE);
+                Glide.with(context)
+                        .load(remoteUrl)
+                        .centerCrop()
+                        .into(holder.ivPhoto);
+            } else {
+                holder.ivPhoto.setImageBitmap(null);
+                holder.ivPhoto.setVisibility(View.GONE);
+                holder.tvEmoji.setVisibility(View.VISIBLE);
+                holder.tvEmoji.setText("☁");
+            }
         }
 
         holder.tvChip.setText(r.region);
@@ -89,6 +126,18 @@ public class RestaurantGridAdapter extends BaseAdapter {
         holder.tvRating.setText(avg > 0
                 ? String.format(Locale.getDefault(), "%.1f", avg) : "—");
 
+        boolean selected = r.id == selectedId;
+        holder.viewSelectionOverlay.setVisibility(selected ? View.VISIBLE : View.GONE);
+        holder.tvSelectionCheck.setVisibility(selected ? View.VISIBLE : View.GONE);
+
+        String badge = badgeMap.get(r.id);
+        if (badge != null) {
+            holder.tvBadge.setText(badge);
+            holder.tvBadge.setVisibility(View.VISIBLE);
+        } else {
+            holder.tvBadge.setVisibility(View.GONE);
+        }
+
         ((com.google.android.material.card.MaterialCardView) holder.card)
                 .setStrokeColor(regionColor);
 
@@ -98,7 +147,7 @@ public class RestaurantGridAdapter extends BaseAdapter {
     private int getRegionColor(String region) {
         if (region == null) return Color.parseColor("#607D8B");
         switch (region) {
-            case "EU-West":       return Color.parseColor("#1565C0");
+            case "EU-West":       return Color.parseColor("#1E88E5");
             case "EU-East":       return Color.parseColor("#00695C");
             case "NA":            return Color.parseColor("#4527A0");
             case "Asia-Pacific":  return Color.parseColor("#E65100");
@@ -125,7 +174,8 @@ public class RestaurantGridAdapter extends BaseAdapter {
     private static class ViewHolder {
         View card;
         View imagePlaceholder;
+        View viewSelectionOverlay;
         ImageView ivPhoto;
-        TextView tvEmoji, tvChip, tvName, tvAddress, tvRating;
+        TextView tvEmoji, tvChip, tvName, tvAddress, tvRating, tvBadge, tvSelectionCheck;
     }
 }

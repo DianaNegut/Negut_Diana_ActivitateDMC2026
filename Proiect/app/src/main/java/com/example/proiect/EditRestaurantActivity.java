@@ -1,6 +1,7 @@
 package com.example.proiect;
 
 import android.Manifest;
+import com.bumptech.glide.Glide;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -237,6 +238,20 @@ public class EditRestaurantActivity extends AppCompatActivity {
             if (f.exists()) {
                 savedImagePath = provider.imageUrl;
                 displayPhoto(savedImagePath);
+            } else {
+                String remoteUrl = RemoteConfig.getImageForRegion(provider.region);
+                if (remoteUrl != null) {
+                    layoutPhotoPlaceholder.setVisibility(View.GONE);
+                    tvChangePhoto.setVisibility(View.VISIBLE);
+                    Glide.with(this).load(remoteUrl).centerCrop().into(ivProviderPhoto);
+                }
+            }
+        } else {
+            String remoteUrl = RemoteConfig.getImageForRegion(provider.region);
+            if (remoteUrl != null) {
+                layoutPhotoPlaceholder.setVisibility(View.GONE);
+                tvChangePhoto.setVisibility(View.VISIBLE);
+                Glide.with(this).load(remoteUrl).centerCrop().into(ivProviderPhoto);
             }
         }
     }

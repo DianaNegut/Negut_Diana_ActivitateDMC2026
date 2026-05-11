@@ -1,5 +1,6 @@
 package com.example.proiect;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -13,11 +14,12 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.proiect.database.DatabaseHelper;
-
 import java.util.Arrays;
 
 public class SettingsActivity extends AppCompatActivity {
+
+    static final String PREFS_NAME = "cloudpod_prefs";
+    static final String KEY_REGION = "preferred_region";
 
     private static final String[] REGIONS =
             {"Toate", "EU-West", "EU-East", "NA", "Asia-Pacific", "South-America"};
@@ -26,14 +28,14 @@ public class SettingsActivity extends AppCompatActivity {
     private Spinner  spinnerCategory;
     private Button   btnSaveCategory;
 
-    private DatabaseHelper db;
+    private SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        db = DatabaseHelper.getInstance(this);
+        prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         ViewCompat.setOnApplyWindowInsetsListener(toolbar, (v, insets) -> {
@@ -56,7 +58,7 @@ public class SettingsActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCategory.setAdapter(adapter);
 
-        String current = db.getUserPref("preferred_region", "Toate");
+        String current = prefs.getString(KEY_REGION, "Toate");
         tvCurrentCategory.setText(current);
 
         int idx = Arrays.asList(REGIONS).indexOf(current);
@@ -64,7 +66,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         btnSaveCategory.setOnClickListener(v -> {
             String selected = REGIONS[spinnerCategory.getSelectedItemPosition()];
-            db.setUserPref("preferred_region", selected);
+            prefs.edit().putString(KEY_REGION, selected).apply();
             tvCurrentCategory.setText(selected);
             Toast.makeText(this, "Preferinta salvata!", Toast.LENGTH_SHORT).show();
         });

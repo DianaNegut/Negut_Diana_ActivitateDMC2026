@@ -1,6 +1,7 @@
 package com.example.proiect;
 
 import android.content.Intent;
+import android.graphics.Paint;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -26,6 +27,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.bumptech.glide.Glide;
 import com.example.proiect.adapter.ReviewAdapter;
 import com.example.proiect.database.DatabaseHelper;
 import com.example.proiect.model.Restaurant;
@@ -105,22 +107,42 @@ public class RestaurantDetailActivity extends AppCompatActivity {
     private void populateData() {
         imageContainer.setBackgroundColor(getRegionColor(provider.region));
 
-        boolean hasPhoto = provider.imageUrl != null && !provider.imageUrl.isEmpty()
+        boolean hasLocalPhoto = provider.imageUrl != null && !provider.imageUrl.isEmpty()
                 && new File(provider.imageUrl).exists();
-        if (hasPhoto) {
+        if (hasLocalPhoto) {
             Bitmap bmp = decodeSampledBitmap(provider.imageUrl, 900, 400);
             ivProviderPhoto.setImageBitmap(bmp);
             ivProviderPhoto.setVisibility(View.VISIBLE);
             tvRegionLetter.setVisibility(View.GONE);
         } else {
-            tvRegionLetter.setText(String.valueOf(provider.region.charAt(0)));
+            String remoteUrl = RemoteConfig.getImageForRegion(provider.region);
+            if (remoteUrl != null) {
+                ivProviderPhoto.setVisibility(View.VISIBLE);
+                tvRegionLetter.setVisibility(View.GONE);
+                Glide.with(this).load(remoteUrl).centerCrop().into(ivProviderPhoto);
+            } else {
+                tvRegionLetter.setText(String.valueOf(provider.region.charAt(0)));
+            }
         }
 
         tvName.setText(provider.name);
         tvRegion.setText(provider.region);
-        tvNodeUrl.setText("Nod: " + (provider.nodeUrl != null ? provider.nodeUrl : "-"));
         tvStorage.setText("Stocare: " + (provider.storageCapacity != null ? provider.storageCapacity : "-"));
         tvPeerId.setText("Peer ID: " + (provider.peerId != null ? provider.peerId : "-"));
+
+        if (provider.nodeUrl != null && !provider.nodeUrl.isEmpty()) {
+            tvNodeUrl.setText("Nod: " + provider.nodeUrl);
+            tvNodeUrl.setTextColor(0xFF1E88E5);
+            tvNodeUrl.setPaintFlags(tvNodeUrl.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+            tvNodeUrl.setOnClickListener(v -> {
+                Intent intent = new Intent(this, WebViewActivity.class);
+                intent.putExtra(WebViewActivity.EXTRA_URL,   provider.nodeUrl);
+                intent.putExtra(WebViewActivity.EXTRA_TITLE, provider.name);
+                startActivity(intent);
+            });
+        } else {
+            tvNodeUrl.setText("Nod: -");
+        }
 
         if (provider.pricePerGB != null && !provider.pricePerGB.isEmpty()) {
             tvPrice.setVisibility(View.VISIBLE);
@@ -251,7 +273,7 @@ public class RestaurantDetailActivity extends AppCompatActivity {
     private int getRegionColor(String region) {
         if (region == null) return Color.parseColor("#607D8B");
         switch (region) {
-            case "EU-West":       return Color.parseColor("#1565C0");
+            case "EU-West":       return Color.parseColor("#1E88E5");
             case "EU-East":       return Color.parseColor("#00695C");
             case "NA":            return Color.parseColor("#4527A0");
             case "Asia-Pacific":  return Color.parseColor("#E65100");

@@ -22,7 +22,7 @@ public class BarChartView extends View {
     private Map<String, Float> data = new LinkedHashMap<>();
 
     private static final int[] COLORS = {
-        Color.parseColor("#1565C0"),
+        Color.parseColor("#1E88E5"),
         Color.parseColor("#00695C"),
         Color.parseColor("#4527A0"),
         Color.parseColor("#E65100"),
@@ -55,7 +55,7 @@ public class BarChartView extends View {
         labelPaint.setTextSize(24f);
         labelPaint.setTextAlign(Paint.Align.CENTER);
 
-        yPaint.setColor(Color.parseColor("#757575"));
+        yPaint.setColor(Color.parseColor("#374151"));
         yPaint.setTextSize(22f);
         yPaint.setTextAlign(Paint.Align.RIGHT);
     }

@@ -1,7 +1,9 @@
 package com.example.proiect;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.util.Log;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.view.Menu;
@@ -11,8 +13,10 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.view.View;
 
 import androidx.appcompat.app.AlertDialog;
@@ -53,6 +57,11 @@ public class MainActivity extends AppCompatActivity {
     private String  currentSearch      = "";
     private int     currentSort        = SORT_DEFAULT;
     private boolean showOnlyFavorites  = false;
+    private String  preferredRegion    = "Toate";
+
+    private Restaurant  compareFirst   = null;
+    private LinearLayout compareBanner;
+    private TextView     tvCompareBannerText;
 
     private static final String[] REGIONS =
             {"Toate", "EU-West", "EU-East", "NA", "Asia-Pacific", "South-America"};
@@ -91,6 +100,16 @@ public class MainActivity extends AppCompatActivity {
         setupSearchView();
         setupGridView();
         setupButtons();
+
+        compareBanner       = findViewById(R.id.compareBanner);
+        tvCompareBannerText = findViewById(R.id.tvCompareBannerText);
+        findViewById(R.id.btnCancelCompare).setOnClickListener(v -> exitCompareMode());
+
+        Log.d("RemoteConfig", "MainActivity: pornesc fetch...");
+        RemoteConfig.fetch(() -> {
+            Log.d("RemoteConfig", "MainActivity: callback primit, refresh adapter");
+            if (adapter != null) adapter.notifyDataSetChanged();
+        });
     }
 
     @Override
@@ -119,6 +138,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        SharedPreferences prefs = getSharedPreferences(SettingsActivity.PREFS_NAME, MODE_PRIVATE);
+        preferredRegion = prefs.getString(SettingsActivity.KEY_REGION, "Toate");
         allProviders = db.getProviders();
         filterProviders();
     }
@@ -144,9 +165,30 @@ public class MainActivity extends AppCompatActivity {
 
         gridView.setOnItemClickListener((parent, view, position, id) -> {
             Restaurant r = filteredProviders.get(position);
-            Intent intent = new Intent(this, RestaurantDetailActivity.class);
-            intent.putExtra("provider_id", r.id);
-            startActivity(intent);
+            if (compareFirst != null) {
+                if (r.id == compareFirst.id) {
+                    exitCompareMode();
+                } else {
+                    Intent intent = new Intent(this, CompareActivity.class);
+                    intent.putExtra(CompareActivity.EXTRA_ID1, compareFirst.id);
+                    intent.putExtra(CompareActivity.EXTRA_ID2, r.id);
+                    exitCompareMode();
+                    startActivity(intent);
+                }
+            } else {
+                Intent intent = new Intent(this, RestaurantDetailActivity.class);
+                intent.putExtra("provider_id", r.id);
+                startActivity(intent);
+            }
+        });
+
+        gridView.setOnItemLongClickListener((parent, view, position, id) -> {
+            Restaurant r = filteredProviders.get(position);
+            compareFirst = r;
+            adapter.setSelectedId(r.id);
+            compareBanner.setVisibility(View.VISIBLE);
+            tvCompareBannerText.setText("Selectat: " + r.name + " — apasă pe alt provider pentru comparare");
+            return true;
         });
     }
 
@@ -216,6 +258,12 @@ public class MainActivity extends AppCompatActivity {
                 .show();
     }
 
+    private void exitCompareMode() {
+        compareFirst = null;
+        adapter.setSelectedId(-1);
+        compareBanner.setVisibility(View.GONE);
+    }
+
     private void updateFilterIcon() {
         boolean active = !currentRegion.equals("Toate")
                 || currentSort != SORT_DEFAULT
@@ -240,6 +288,17 @@ public class MainActivity extends AppCompatActivity {
         }
 
         switch (currentSort) {
+            case SORT_DEFAULT:
+                if (!preferredRegion.equals("Toate")) {
+                    filteredProviders.sort((a, b) -> {
+                        boolean aMatch = a.region.equals(preferredRegion);
+                        boolean bMatch = b.region.equals(preferredRegion);
+                        if (aMatch && !bMatch) return -1;
+                        if (!aMatch && bMatch) return  1;
+                        return a.name.compareTo(b.name);
+                    });
+                }
+                break;
             case SORT_NAME_ASC:
                 filteredProviders.sort((a, b) -> a.name.compareTo(b.name));
                 break;

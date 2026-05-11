@@ -10,5 +10,14 @@
         <item name="android:windowOptOutEdgeToEdgeEnforcement" tools:ignore="NewApi">true</item>
     </style>
 
-    <style name="Theme.Proiect" parent="Base.Theme.Proiect" />
+    <style name="Theme.Proiect" parent="Base.Theme.Proiect">
+        <item name="android:windowAnimationStyle">@style/SlideAnimation</item>
+    </style>
+
+    <style name="SlideAnimation" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/slide_in_right</item>
+        <item name="android:activityOpenExitAnimation">@anim/slide_out_left</item>
+        <item name="android:activityCloseEnterAnimation">@anim/slide_in_left</item>
+        <item name="android:activityCloseExitAnimation">@anim/slide_out_right</item>
+    </style>
 </resources>

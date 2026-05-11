@@ -22,7 +22,7 @@ public class PieChartView extends View {
     private Map<String, Integer> data = new LinkedHashMap<>();
 
     private static final int[] COLORS = {
-        Color.parseColor("#1565C0"),
+        Color.parseColor("#1E88E5"),
         Color.parseColor("#00695C"),
         Color.parseColor("#4527A0"),
         Color.parseColor("#E65100"),

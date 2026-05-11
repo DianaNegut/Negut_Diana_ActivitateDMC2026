@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App -->
+    <string name="app_name">CloudPod</string>
+
+    <!-- Login -->
+    <string name="login_title">CloudPod</string>
+    <string name="login_subtitle">Sign in to continue</string>
+    <string name="login_btn">Sign In</string>
+    <string name="login_no_account">Don\'t have an account? </string>
+    <string name="login_register_link">Register</string>
+
+    <!-- Register -->
+    <string name="register_title">New Account</string>
+    <string name="register_subtitle">Fill in the details below</string>
+    <string name="register_btn">Create Account</string>
+    <string name="register_have_account">Already have an account? </string>
+    <string name="register_login_link">Sign In</string>
+
+    <!-- Main -->
+    <string name="search_hint">Search provider...</string>
+    <string name="logout">Logout</string>
+    <string name="all_categories">All</string>
+    <string name="filter_title">Filter and Sort</string>
+    <string name="filter_apply">Apply</string>
+    <string name="filter_cancel">Cancel</string>
+    <string name="filter_reset">Reset</string>
+
+    <!-- Provider -->
+    <string name="restaurants">Providers</string>
+    <string name="add_provider">Add Provider</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="delete_provider">Delete Provider</string>
+    <string name="add_photo">Add Photo</string>
+    <string name="gallery_or_camera">Gallery or Camera</string>
+    <string name="change_photo">✎ Change</string>
+    <string name="general_info">General Information</string>
+    <string name="region_label">Region *</string>
+    <string name="ipfs_details">IPFS Technical Details</string>
+    <string name="location_optional">Location (optional)</string>
+
+    <!-- Detail -->
+    <string name="see_on_map">View on Map</string>
+    <string name="add_review">Add Rating</string>
+    <string name="favorite">Add to Favorites</string>
+    <string name="reviews">Ratings</string>
+    <string name="no_reviews">No ratings for this provider yet.</string>
+
+    <!-- Add Review -->
+    <string name="provider_label">Provider</string>
+    <string name="comment_label">Comment</string>
+    <string name="rating_label">Rating (1-5 stars)</string>
+    <string name="date_label">Rating Date</string>
+    <string name="recommend">I recommend this provider</string>
+    <string name="comment_hint">Write your comment...</string>
+    <string name="select_date">Select date</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+
+    <!-- Statistics -->
+    <string name="statistics">Statistics</string>
+    <string name="preferred_region_label">Preferred region: </string>
+    <string name="top_providers">Top 5 Providers</string>
+    <string name="distribution_title">Provider distribution by region</string>
+    <string name="avg_rating_title">Average rating by region</string>
+    <string name="recent_reviews">Recent Ratings</string>
+    <string name="see_more">See More</string>
+
+    <!-- Profile -->
+    <string name="change_username">Change Username</string>
+    <string name="save_username">Save Username</string>
+    <string name="my_providers">My Providers</string>
+    <string name="no_providers">You haven\'t added any providers yet.</string>
+    <string name="my_reviews">My Ratings</string>
+    <string name="no_my_reviews">You haven\'t added any ratings yet.</string>
+    <string name="change_password">Change Password</string>
+
+    <!-- Settings -->
+    <string name="preferred_region">Preferred Region</string>
+    <string name="preferred_region_desc">Select the provider region you prefer. This is shown in the Statistics screen.</string>
+    <string name="current_region">Current region:</string>
+    <string name="save_preference">Save Preference</string>
+
+    <!-- Map -->
+    <string name="map">Map</string>
+    <string name="map_title">Provider Map</string>
+    <string name="map_placeholder">Map will be available in the next version.</string>
+</resources>

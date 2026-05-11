@@ -46,6 +46,35 @@
                 android:layout_height="match_parent"
                 android:background="@drawable/gradient_card_header" />
 
+            <!-- Selection overlay -->
+            <View
+                android:id="@+id/viewSelectionOverlay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#551E88E5"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/tvSelectionCheck"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="✓"
+                android:textSize="48sp"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+            <!-- Top provider badge top-right -->
+            <TextView
+                android:id="@+id/tvBadge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|end"
+                android:layout_margin="8dp"
+                android:textSize="26sp"
+                android:visibility="gone" />
+
             <!-- Category chip bottom-left -->
             <TextView
                 android:id="@+id/tvCategoryChip"

@@ -41,7 +41,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Regiune preferata"
+                        android:text="@string/preferred_region"
                         android:textSize="14sp"
                         android:textStyle="bold"
                         android:textColor="@color/colorPrimary"
@@ -50,7 +50,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Selecteaza regiunea de provideri pe care o preferi. Aceasta este afisata in ecranul de Statistici."
+                        android:text="@string/preferred_region_desc"
                         android:textSize="13sp"
                         android:textColor="@color/colorTextSecondary"
                         android:layout_marginBottom="16dp" />
@@ -58,7 +58,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Regiunea curenta:"
+                        android:text="@string/current_region"
                         android:textSize="13sp"
                         android:textColor="@color/colorTextPrimary"
                         android:layout_marginBottom="4dp" />
@@ -84,7 +84,7 @@
                         android:id="@+id/btnSaveCategory"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
-                        android:text="Salveaza preferinta"
+                        android:text="@string/save_preference"
                         android:backgroundTint="@color/colorPrimary" />
 
                 </LinearLayout>
